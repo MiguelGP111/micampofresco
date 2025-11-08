@@ -9,6 +9,8 @@ dotenv.config();
 // Importar rutas
 import usuarioRoutes from './vista/usuarioRoutes.js';
 import adminRoutes from './vista/adminRoutes.js';
+// Módulo temporal - RF18: Estimación de costo de envío (pendiente de integración final)
+import estimacionRoutes from './configuracion/temp/vista/estimacionRoutes.js';
 
 // Crear aplicación Express
 const app = express();
@@ -34,7 +36,9 @@ app.get('/', (req, res) => {
             loginAdmin: '/api/login-admin',
             loginUsuario: '/api/usuarios/login-usuario',
             usuarios: '/api/usuarios',
-            perfil: '/api/admin/perfil'
+            perfil: '/api/admin/perfil',
+            estimacionTemp: '/api/temp/estimacion/:idAgricultor/:idDistribuidor',
+            confirmarEstimacionTemp: '/api/temp/estimacion/confirmar'
         }
     });
 });
@@ -44,6 +48,9 @@ console.log('🔗 Registrando rutas de administrador...');
 app.use('/api', adminRoutes); // Rutas de administrador (login-admin, perfil)
 console.log('🔗 Registrando rutas de usuarios...');
 app.use('/api/usuarios', usuarioRoutes);
+// Módulo temporal - RF18: Estimación de costo de envío (pendiente de integración final)
+console.log('🔗 Registrando rutas temporales de estimación de costo de envío (RF18)...');
+app.use('/api/temp/estimacion', estimacionRoutes); // Rutas temporales de estimación de costo de envío
 
 // Middleware para manejo de rutas no encontradas
 app.use((req, res) => {
@@ -70,6 +77,8 @@ app.listen(PORT, async () => {
     console.log(`👤 Login usuario: http://localhost:${PORT}/api/usuarios/login-usuario`);
     console.log(`👤 Perfil admin: http://localhost:${PORT}/api/admin/perfil`);
     console.log(`📋 Usuarios: http://localhost:${PORT}/api/usuarios`);
+      console.log(`📦 Estimación de envío (temp): http://localhost:${PORT}/api/temp/estimacion/:idAgricultor/:idDistribuidor`);
+    console.log(`✅ Confirmar estimación (temp): http://localhost:${PORT}/api/temp/estimacion/confirmar`);
     console.log(`🌍 Entorno: ${process.env.NODE_ENV || 'development'}`);
     
     // Probar conexión a la base de datos
