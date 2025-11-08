@@ -1,14 +1,14 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { probarConexion } from './admin/configuracion/db.js';
+import { probarConexion } from './configuracion/db.js';
 
 // Cargar variables de entorno
 dotenv.config();
 
 // Importar rutas
-import usuarioRoutes from './admin/vista/usuarioRoutes.js';
-import adminRoutes from './admin/vista/adminRoutes.js';
+import usuarioRoutes from './vista/usuarioRoutes.js';
+import adminRoutes from './vista/adminRoutes.js';
 
 // Crear aplicación Express
 const app = express();
