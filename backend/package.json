@@ -1,0 +1,28 @@
+{
+  "name": "navegacion-web-campofresco",
+  "version": "1.0.0",
+  "description": "Sistema de navegación web para Campofresco - RF39",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js",
+    "watch": "node --watch app.js",
+    "init-db": "node scripts/initDatabase.js"
+  },
+  "keywords": [
+    "express",
+    "postgresql",
+    "mvc"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.16.3"
+  }
+}
