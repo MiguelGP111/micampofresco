@@ -6,15 +6,13 @@ const PedidosVendedorControlador = {
     async listarPedidos(req, res) {
         try {
             const pedidos = await PedidosVendedorModelo.listarPedidos();
-            console.log('Pedidos listados:', pedidos);
             res.json({
-                mensaje: 'Pedidos obtenidos correctamente',
+                mensaje: 'Lista de pedidos obtenida exitosamente.',
                 pedidos
             });
         } catch (error) {
-            console.error('Error al listar pedidos:', error.message);
             res.status(500).json({
-                mensaje: 'Error al obtener pedidos',
+                mensaje: 'No se pudieron obtener los pedidos. Intente nuevamente.',
                 error: error.message
             });
         }
@@ -24,34 +22,54 @@ const PedidosVendedorControlador = {
     async buscarPedidoId(req, res) {
         try {
             const { id } = req.params;
+
+            // Validación de ID
+            if (!id || isNaN(Number(id))) {
+                return res.status(400).json({
+                    mensaje: 'El ID enviado no es válido. Por favor, verifique y vuelva a intentarlo.'
+                });
+            }
+
             const pedido = await PedidosVendedorModelo.buscarPedidoId(id);
-            console.log('Pedido encontrado:', pedido);
+
+            if (!pedido) {
+                return res.status(404).json({
+                    mensaje: 'No se encontró ningún pedido con el ID proporcionado.'
+                });
+            }
+
             res.json({
-                mensaje: 'Pedido encontrado correctamente',
+                mensaje: 'Pedido encontrado exitosamente.',
                 pedido
             });
+
         } catch (error) {
-            console.error('Error al buscar pedido:', error.message);
-            res.status(404).json({
-                mensaje: 'Error al buscar pedido',
+            res.status(500).json({
+                mensaje: 'perdido con ese ID no encontrado.',
                 error: error.message
             });
         }
     },
 
-    // Crear un pedido
+    // Crear pedido
     async crearPedido(req, res) {
         try {
             const pedido = await PedidosVendedorModelo.crearPedido(req.body);
-            console.log('Pedido creado:', pedido);
+
+            if (!pedido) {
+                return res.status(400).json({
+                    mensaje: 'No se pudo crear el pedido. Verifique los datos e intente nuevamente.'
+                });
+            }
+
             res.status(201).json({
-                mensaje: 'Pedido creado correctamente',
+                mensaje: 'Pedido creado exitosamente.',
                 pedido
             });
+
         } catch (error) {
-            console.error('Error al crear pedido:', error.message);
             res.status(400).json({
-                mensaje: 'Error al crear pedido',
+                mensaje: 'Hubo un problema al crear el pedido. Revise los datos enviados.',
                 error: error.message
             });
         }
@@ -61,16 +79,30 @@ const PedidosVendedorControlador = {
     async actualizarPedido(req, res) {
         try {
             const { id } = req.params;
+
+            // Validación de ID
+            if (!id || isNaN(Number(id))) {
+                return res.status(400).json({
+                    mensaje: 'El ID enviado no es válido. Por favor, verifique y vuelva a intentarlo.'
+                });
+            }
+
             const pedido = await PedidosVendedorModelo.actualizarPedido(id, req.body);
-            console.log('Pedido actualizado:', pedido);
+
+            if (!pedido) {
+                return res.status(404).json({
+                    mensaje: 'No se encontró ningún pedido con ese ID para actualizar.'
+                });
+            }
+
             res.json({
-                mensaje: 'Pedido actualizado correctamente',
+                mensaje: 'Pedido actualizado exitosamente.',
                 pedido
             });
+
         } catch (error) {
-            console.error('Error al actualizar pedido:', error.message);
-            res.status(400).json({
-                mensaje: 'Error al actualizar pedido',
+            res.status(500).json({
+                mensaje: 'perdido con ese ID no encontrado.',
                 error: error.message
             });
         }
@@ -80,20 +112,35 @@ const PedidosVendedorControlador = {
     async eliminarPedido(req, res) {
         try {
             const { id } = req.params;
+
+            // Validación de ID
+            if (!id || isNaN(Number(id))) {
+                return res.status(400).json({
+                    mensaje: 'El ID enviado no es válido. Por favor, verifique y vuelva a intentarlo.'
+                });
+            }
+
             const pedido = await PedidosVendedorModelo.eliminarPedido(id);
-            console.log('Pedido eliminado:', pedido);
+
+            if (!pedido) {
+                return res.status(404).json({
+                    mensaje: 'No se encontró ningún pedido con ese ID para eliminar.'
+                });
+            }
+
             res.json({
-                mensaje: 'Pedido eliminado correctamente',
+                mensaje: 'Pedido eliminado exitosamente.',
                 pedido
             });
+
         } catch (error) {
-            console.error('Error al eliminar pedido:', error.message);
-            res.status(400).json({
-                mensaje: 'Error al eliminar pedido',
+            res.status(500).json({
+                mensaje: 'perdido con ese ID no encontrado.',
                 error: error.message
             });
         }
     }
+
 };
 
 export default PedidosVendedorControlador;
