@@ -1,0 +1,37 @@
+{
+  "name": "micampofresco",
+  "version": "1.0.0",
+  "description": "Integración, programación y despliegue del proyecto formativo MiCampoFresco.",
+  "main": "server.js",
+  "type": "module",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "watch": "node --watch server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MiguelGP111/micampofresco.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MiguelGP111/micampofresco/issues"
+  },
+  "homepage": "https://github.com/MiguelGP111/micampofresco#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "module": "^2.0.0",
+    "nodemailer": "^7.0.10",
+    "pg": "^8.16.3",
+    "twilio": "^5.10.4"
+  }
+}
