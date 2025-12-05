@@ -8,9 +8,13 @@ async function enviarCorreoP(correo, codigo) {
       host: 'smtp.ethereal.email',
       port: 587,
       secure: false,
+      requireTLS: false,
       auth: {
         user: testAccount.user,
         pass: testAccount.pass
+      },
+      tls: {
+        rejectUnauthorized: false,
       }
     });
 

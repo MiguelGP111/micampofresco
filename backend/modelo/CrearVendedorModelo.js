@@ -1,5 +1,5 @@
 // src/modelo/vendedormodelo/CrearVendedorModelo.js
-import db from './db/Conexion.js';
+import {ejecutarConsulta} from '../configuracion/db.js';
 
 class CrearVendedorModelo {
   constructor(
@@ -33,8 +33,8 @@ class CrearVendedorModelo {
 
   async mostrarTodos() {
     try {
-      const result = await db.query('SELECT * FROM vendedores ORDER BY idvendedor DESC');
-      return result.rows;
+      const result = await ejecutarConsulta('SELECT * FROM vendedores ORDER BY idvendedor DESC');
+      return result;
     } catch (error) {
       console.error('Error al obtener los vendedores:', error);
       throw error;
@@ -43,8 +43,8 @@ class CrearVendedorModelo {
 
   async buscarVendedorId(id) {
     try {
-      const result = await db.query('SELECT * FROM vendedores WHERE idvendedor = $1', [id]);
-      return result.rows[0];
+      const result = await ejecutarConsulta('SELECT * FROM vendedores WHERE idvendedor = $1', [id]);
+      return result[0];
     } catch (error) {
       console.error('Error al obtener vendedor por ID:', error);
       throw error;
@@ -75,8 +75,8 @@ class CrearVendedorModelo {
     ];
 
     try {
-      const result = await db.query(query, values);
-      this.idvendedor = result.rows[0].idvendedor;
+      const result = await ejecutarConsulta(query, values);
+      this.idvendedor = result[0].idvendedor;
       return this;
     } catch (error) {
       console.error('Error al guardar vendedor:', error);
@@ -84,23 +84,23 @@ class CrearVendedorModelo {
     }
   }
 
-  // ✅ Estos métodos deben ser estáticos
+  //  Estos métodos deben ser estáticos
   static async buscarPorDocumento(documento) {
     const query = `SELECT * FROM vendedores WHERE documento = $1`;
-    const result = await db.query(query, [documento]);
-    return result.rows[0] || null;
+    const result = await ejecutarConsulta(query, [documento]);
+    return result[0] || null;
   }
 
   static async buscarPorEmail(email) {
     const query = `SELECT * FROM vendedores WHERE email = $1`;
-    const result = await db.query(query, [email]);
-    return result.rows[0] || null;
+    const result = await ejecutarConsulta(query, [email]);
+    return result[0] || null;
   }
 
   static async buscarPorTelefono(telefono) {
     const query = `SELECT * FROM vendedores WHERE telefono = $1`;
-    const result = await db.query(query, [telefono]);
-    return result.rows[0] || null;
+    const result = await ejecutarConsulta(query, [telefono]);
+    return result[0] || null;
   }
 
 
@@ -117,8 +117,8 @@ class CrearVendedorModelo {
     values.push(id);
 
     try {
-      const result = await db.query(query, values);
-      return result.rows[0];
+      const result = await ejecutarConsulta(query, values);
+      return result[0];
     } catch (error) {
       console.error('Error al actualizar vendedor:', error);
       throw error;
@@ -127,8 +127,8 @@ class CrearVendedorModelo {
 
   async eliminarVendedor(id) {
     try {
-      const result = await db.query('DELETE FROM vendedores WHERE idvendedor = $1 RETURNING *', [id]);
-      return result.rows[0];
+      const result = await ejecutarConsulta('DELETE FROM vendedores WHERE idvendedor = $1 RETURNING *', [id]);
+      return result[0];
     } catch (error) {
       console.error('Error al eliminar vendedor:', error);
       throw error;

@@ -20,7 +20,7 @@ export const PromocionesVendedorControlador = {
   const { nombre } = req.query; // nombre opcional por query
 
   if (id) {
-    console.log('🆔 ID recibido:', id);
+    console.log(' ID recibido:', id);
   } else if (nombre) {
     console.log('Nombre recibido:', nombre);
   }

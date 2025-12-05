@@ -1,5 +1,5 @@
 // src/modelo/productomodelo/CrearProductoModelo.js
-import db from './db/Conexion.js';
+import {ejecutarConsulta} from '../configuracion/db.js';
 
 class CrearProductosModelo {
   constructor({
@@ -21,7 +21,7 @@ class CrearProductosModelo {
     certificacion = '',
     imagen_principal = null,
     imagen_galeria = []
-  } = {}) { // 👈 valor por defecto = {} evita el error de undefined
+  } = {}) { //  valor por defecto = {} evita el error de undefined
     this.idvendedor = idvendedor;
     this.nombre = nombre;
     this.descripcion = descripcion;
@@ -47,8 +47,8 @@ class CrearProductosModelo {
   // Mostrar todos los productos
   async mostrarTodos() {
     try {
-      const result = await db.query('SELECT * FROM productos ORDER BY idproducto DESC');
-      return result.rows;
+      const result = await ejecutarConsulta('SELECT * FROM productos ORDER BY idproducto DESC');
+      return result;
     } catch (error) {
       console.error('Error al obtener los productos:', error);
       throw error;
@@ -58,11 +58,11 @@ class CrearProductosModelo {
   // Buscar producto por ID
   async buscarProId(id) {
     try {
-      const result = await db.query(
+      const result = await ejecutarConsulta(
         'SELECT * FROM productos WHERE idproducto = $1',
         [id]
       );
-      return result.rows[0];
+      return result[0];
     } catch (error) {
       console.error('Error al obtener producto por ID:', error);
       throw error;
@@ -106,8 +106,8 @@ class CrearProductosModelo {
     ];
 
     try {
-      const result = await db.query(query, values);
-      this.idproducto = result.rows[0].idproducto;
+      const result = await ejecutarConsulta(query, values);
+      this.idproducto = result[0].idproducto;
       return this;
     } catch (error) {
       console.error('Error al guardar producto:', error);
@@ -127,7 +127,7 @@ class CrearProductosModelo {
     values.push(id);
 
     try {
-      await db.query(query, values);
+      await ejecutarConsulta(query, values);
       return { message: 'Producto actualizado correctamente' };
     } catch (error) {
       console.error('Error al actualizar producto:', error);
@@ -138,7 +138,7 @@ class CrearProductosModelo {
   // Eliminar producto
   async eliminarProducto(id) {
     try {
-      const result = await db.query('DELETE FROM productos WHERE idproducto = $1', [id]);
+      const result = await ejecutarConsulta('DELETE FROM productos WHERE idproducto = $1', [id]);
       return result.rowCount > 0;
     } catch (error) {
       console.error('Error al eliminar producto:', error);

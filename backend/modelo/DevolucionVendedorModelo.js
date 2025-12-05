@@ -1,13 +1,14 @@
 // backend/modelo/DevolucionModelo.js
-import db from '../modelo/db/Conexion.js';
+import { ejecutarConsulta } from '../configuracion/db.js';
+
 
 export const DevolucionModelo = {
 
   // Obtener devoluciones por usuario
   async obtenerDevoluciones() {
     try {
-      const result = await db.query('SELECT * FROM devolucion');
-      return result.rows;
+      const result = await ejecutarConsulta('SELECT * FROM devolucion');
+      return result;
     } catch (error) {
       console.error('Error al obtener devoluciones:', error);
       throw new Error('No se pudieron obtener las devoluciones');
@@ -18,8 +19,8 @@ export const DevolucionModelo = {
   async obtenerDevolucionPorId(idevolucion) {
     try {
       const query = 'SELECT * FROM devolucion WHERE idevolucion = $1';
-      const { rows } = await db.query(query, [idevolucion]);
-      return rows[0];
+      const result = await ejecutarConsulta(query, [idevolucion]);
+      return result[0];
     } catch (error) {
       console.error('Error al obtener devolución:', error);
       throw new Error('No se pudo obtener la devolución');
@@ -30,7 +31,7 @@ export const DevolucionModelo = {
   async crearDevolucion(data) {
     try {
       const { idpedido, idvendedor, motivo, estado } = data;
-      const result = await db.query(
+      const result = await ejecutarConsulta(
         `INSERT INTO devolucion (
          idpedido, idvendedor, motivo, estado, fecha_solicitud, created_at, updated_at
       )
@@ -38,7 +39,7 @@ export const DevolucionModelo = {
       RETURNING *`,
         [ idpedido, idvendedor, motivo, estado]
       );
-      return result.rows[0];
+      return result[0];
     } catch (error) {
       console.error('Error al crear devolución:', error);
       throw new Error('No se pudo crear la devolución');
@@ -50,7 +51,7 @@ export const DevolucionModelo = {
  async actualizarDevolucion(idevolucion, data) {
   try {
     const { motivo, estado } = data;
-    const result = await db.query(
+    const result = await ejecutarConsulta(
       `UPDATE devolucion
        SET motivo = $1, estado = $2, updated_at = NOW()
        WHERE idevolucion = $3
@@ -58,7 +59,7 @@ export const DevolucionModelo = {
       [motivo, estado, idevolucion] // ✅ se agregó el idevolucion faltante
     );
 
-    return result.rows[0];
+    return result[0];
   } catch (error) {
     console.error('Error al actualizar devolución:', error);
     throw new Error('No se pudo actualizar la devolución');
@@ -68,11 +69,11 @@ export const DevolucionModelo = {
   // Eliminar devolución
   async eliminarDevolucion(idevolucion) {
     try {
-      const result = await db.query(
+      const result = await ejecutarConsulta(
         `DELETE FROM devolucion WHERE idevolucion=$1 RETURNING *`,
         [idevolucion]
       );
-      return result.rows[0];
+      return result[0];
     } catch (error) {
       console.error('Error al eliminar devolución:', error);
       throw new Error('No se pudo eliminar la devolución');

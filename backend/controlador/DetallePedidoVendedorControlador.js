@@ -1,14 +1,15 @@
-import pool from '../modelo/db/Conexion.js'; // conexión a PostgreSQL
+
+import { ejecutarConsulta } from '../configuracion/db.js';
 import DetallePedidoVendedorModelo from '../modelo/DetallePedidoVendedorModelo.js';
 
 export const DetallePedidoVendedorControlador = {
 
-  // 📋 Listar todos los detalles o por idpedido
+  //  Listar todos los detalles o por idpedido
   async listarDetalles(req, res) {
     try {
       const { idpedido } = req.query;
       const detalles = await DetallePedidoVendedorModelo.listarDetalles(idpedido);
-      console.log('📦 Detalles obtenidos:', detalles);
+      console.log(' Detalles obtenidos:', detalles);
 
       res.json({ mensaje: 'Detalles obtenidos correctamente', Detalle_del_pedido: detalles });
     } catch (error) {
@@ -17,7 +18,7 @@ export const DetallePedidoVendedorControlador = {
     }
   },
 
-  // 🔍 Buscar por iddetallep
+  //  Buscar por iddetallep
   async buscarDetalleId(req, res) {
     try {
       const { id } = req.params;
@@ -29,7 +30,7 @@ export const DetallePedidoVendedorControlador = {
       if (!detalle) {
         return res.status(404).json({ mensaje: 'Detalle no encontrado' });
       }
-      console.log('🔎 Detalle encontrado:', detalle);
+      console.log(' Detalle encontrado:', detalle);
       res.json({ mensaje: 'Detalle obtenido correctamente', Detalle_del_pedido: detalle });
     } catch (error) {
       console.error(error);
@@ -37,7 +38,7 @@ export const DetallePedidoVendedorControlador = {
     }
   },
 
-  // ➕ Crear nuevo detalle
+  //  Crear nuevo detalle
   async crearDetalle(req, res) {
     try {
       const { idpedido, idproducto, cantidad, precio_unitario, descuento, impuesto } = req.body || {};
@@ -51,18 +52,18 @@ export const DetallePedidoVendedorControlador = {
       }
 
       // Verificar pedido
-      const pedidoExiste = await pool.query('SELECT idpedido FROM pedidos WHERE idpedido = $1', [idpedido]);
+      const pedidoExiste = await ejecutarConsulta('SELECT idpedido FROM pedidos WHERE idpedido = $1', [idpedido]);
       if (pedidoExiste.rowCount === 0) {
         return res.status(404).json({ mensaje: 'El pedido no existe' });
       }
 
       // Verificar producto
-      const productoExiste = await pool.query('SELECT idproducto FROM productos WHERE idproducto = $1', [idproducto]);
+      const productoExiste = await ejecutarConsulta('SELECT idproducto FROM productos WHERE idproducto = $1', [idproducto]);
       if (productoExiste.rowCount === 0) {
         return res.status(404).json({ mensaje: 'El producto no existe' });
       }
 
-      // ✅ CÁLCULOS
+      //  CÁLCULOS
       const subtotal = cantidad * precio_unitario;                // subtotal sin descuento
       const subtotalConDescuento = subtotal - descuento;         // subtotal después del descuento
       const ivaMonto = subtotalConDescuento * (impuesto / 100);  // calcular IVA
@@ -81,7 +82,7 @@ export const DetallePedidoVendedorControlador = {
         total
       });
 
-      console.log('🆕 Detalle creado:', nuevoDetalle);
+      console.log(' Detalle creado:', nuevoDetalle);
       res.status(201).json({ mensaje: 'Detalle creado correctamente', Detalle_del_pedido: nuevoDetalle });
     } catch (error) {
       console.error(error);
@@ -89,7 +90,7 @@ export const DetallePedidoVendedorControlador = {
     }
   },
 
-  // 🔁 Actualizar detalle
+  //  Actualizar detalle
   async actualizarDetalle(req, res) {
     try {
       const { id } = req.params;
@@ -103,7 +104,7 @@ export const DetallePedidoVendedorControlador = {
         return res.status(400).json({ mensaje: 'Los valores deben ser números válidos y positivos' });
       }
 
-      // ✅ CÁLCULOS
+      //  CÁLCULOS
       const subtotal = cantidad * precio_unitario;                // subtotal sin descuento
       const subtotalConDescuento = subtotal - descuento;         // subtotal después del descuento
       const ivaMonto = subtotalConDescuento * (impuesto / 100);  // calcular IVA
@@ -124,7 +125,7 @@ export const DetallePedidoVendedorControlador = {
         return res.status(404).json({ mensaje: 'Detalle no encontrado' });
       }
 
-      console.log('♻️ Detalle actualizado:', detalleActualizado);
+      console.log(' Detalle actualizado:', detalleActualizado);
       res.json({ mensaje: 'Detalle actualizado correctamente', Detalle_del_pedido: detalleActualizado });
     } catch (error) {
       console.error(error);
@@ -132,7 +133,7 @@ export const DetallePedidoVendedorControlador = {
     }
   },
 
-  // ❌ Eliminar detalle
+  //  Eliminar detalle
   async eliminarDetalle(req, res) {
     try {
       const { id } = req.params;
@@ -142,7 +143,7 @@ export const DetallePedidoVendedorControlador = {
         return res.status(404).json({ mensaje: 'Detalle no encontrado' });
       }
 
-      console.log('🗑️ Detalle eliminado:', detalleEliminado);
+      console.log(' Detalle eliminado:', detalleEliminado);
       res.json({ mensaje: 'Detalle eliminado correctamente', Detalle_del_pedido: detalleEliminado });
     } catch (error) {
       console.error(error);

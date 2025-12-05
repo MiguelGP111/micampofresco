@@ -1,36 +1,37 @@
-import db from './db/Conexion.js';
+import { ejecutarConsulta } from '../configuracion/db.js';
+
 
 export const DetalleProduModelo = {
 
-  // 📌 Obtener todos los detalles de un vendedor
+  //  Obtener todos los detalles de un vendedor
   async obtenerDetalles(idvendedor) {
     try {
-      const result = await db.query(
+      const result = await ejecutarConsulta(
         `SELECT * FROM detalle_producto WHERE idvendedor = $1 ORDER BY idetalle DESC`,
         [idvendedor]
       );
-      return result.rows;
+      return result;
     } catch (error) {
       console.error('Error al obtener detalles de productos:', error);
       throw new Error('No se pudo obtener los detalles');
     }
   },
 
-  // 📌 Obtener detalle por ID
-  async obtenerDetalleId(iddetalle) {
+  //  Obtener detalle por ID
+  async obtenerDetalleId(idetalle) {
     try {
-      const result = await db.query(
+      const result = await ejecutarConsulta(
         `SELECT * FROM detalle_producto WHERE idetalle = $1`,
-        [iddetalle]
+        [idetalle]
       );
-      return result.rows[0];
+      return result[0];
     } catch (error) {
       console.error('Error al obtener detalle:', error);
       throw new Error('No se pudo obtener el detalle');
     }
   },
 
-  // 📌 Crear detalle
+  //  Crear detalle
   async crearDetalle(data) {
     try {
       const {
@@ -49,8 +50,8 @@ export const DetalleProduModelo = {
         imagen_galeria
       } = data;
 
-      const result = await db.query(
-        `INSERT INTO deta_lleproducto (
+      const result = await ejecutarConsulta(
+        `INSERT INTO detalle_producto (
           idproducto, idvendedor, descripcion, precio, descuento, stock,
           disponible, fecha_expiracion, origen, metodo_produccion,
           certificacion, imagen_principal, imagen_galeria, fecha_creacion, fecha_actualizacion
@@ -65,14 +66,14 @@ export const DetalleProduModelo = {
         ]
       );
 
-      return result.rows[0];
+      return result[0];
     } catch (error) {
       console.error('Error al crear detalle:', error);
       throw new Error('No se pudo crear el detalle del producto');
     }
   },
 
-  // 📌 Actualizar detalle
+  //  Actualizar detalle
   async actualizarDetalle(id, data) {
     try {
       const fields = Object.keys(data);
@@ -93,8 +94,8 @@ export const DetalleProduModelo = {
 
       values.push(id);
 
-      const result = await db.query(query, values);
-      return result.rows[0];
+      const result = await ejecutarConsulta(query, values);
+      return result[0];
 
     } catch (error) {
       console.error('Error al actualizar detalle:', error);
@@ -102,14 +103,14 @@ export const DetalleProduModelo = {
     }
   },
 
-  // 📌 Eliminar detalle
+  //  Eliminar detalle
   async eliminarDetalle(id) {
     try {
-      const result = await db.query(
+      const result = await ejecutarConsulta(
         `DELETE FROM detalle_producto WHERE idetalle = $1 RETURNING *`,
         [id]
       );
-      return result.rows[0];
+      return result[0];
     } catch (error) {
       console.error('Error al eliminar detalle:', error);
       throw new Error('No se pudo eliminar el detalle');

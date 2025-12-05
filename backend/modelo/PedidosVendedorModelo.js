@@ -1,12 +1,13 @@
-import db from './db/Conexion.js';
+import { ejecutarConsulta } from '../configuracion/db.js';
+
 
 const PedidosModelo = {
 
     // Listar todos los pedidos
     async listarPedidos() {
         try {
-            const result = await db.query('SELECT * FROM pedidos');
-            return result.rows;
+            const result = await ejecutarConsulta('SELECT * FROM pedidos');
+            return result;
         } catch (error) {
             console.error('Error al listar pedidos:', error);
             throw new Error('No se pudieron obtener los pedidos');
@@ -18,14 +19,14 @@ const PedidosModelo = {
         if (!id || isNaN(Number(id))) throw new Error('idpedido inválido');
 
         try {
-            const result = await db.query(
+            const result = await ejecutarConsulta(
                 'SELECT * FROM pedidos WHERE idpedido = $1',
                 [id]
             );
 
-            if (!result.rows[0]) throw new Error('Pedido no encontrado');
+            if (!result[0]) throw new Error('Pedido no encontrado');
 
-            return result.rows[0];
+            return result[0];
         } catch (error) {
             console.error('Error al buscar pedido por ID:', error);
             throw new Error('No se pudo buscar el pedido');
@@ -44,14 +45,14 @@ const PedidosModelo = {
         if (!fecha_pedido || isNaN(Date.parse(fecha_pedido))) throw new Error('fecha_pedido es obligatoria y debe ser una fecha válida');
 
         try {
-            const result = await db.query(
+            const result = await ejecutarConsulta(
                 `INSERT INTO pedidos (idproducto, idusuario, idvendedor, estado, fecha_pedido)
                  VALUES ($1, $2, $3, $4, $5)
                  RETURNING *`,
                 [idproducto, idusuario, idvendedor, estado, fecha_pedido]
             );
 
-            return result.rows[0];
+            return result[0];
         } catch (error) {
             console.error('Error al crear pedido:', error);
             throw new Error('No se pudo crear el pedido');
@@ -70,7 +71,7 @@ const PedidosModelo = {
         if (!fecha_pedido || isNaN(Date.parse(fecha_pedido))) throw new Error('fecha_pedido inválida');
 
         try {
-            const result = await db.query(
+            const result = await ejecutarConsulta(
                 `UPDATE pedidos
              SET idproducto=$1,
                  idusuario=$2,
@@ -82,9 +83,9 @@ const PedidosModelo = {
                 [idproducto, idusuario, idvendedor, estado, fecha_pedido, id]
             );
 
-            if (!result.rows[0]) throw new Error('Pedido no encontrado');
+            if (!result[0]) throw new Error('Pedido no encontrado');
 
-            return result.rows[0];
+            return result[0];
         } catch (error) {
             console.error('Error al actualizar pedido:', error);
             throw new Error('No se pudo actualizar el pedido');
@@ -96,14 +97,14 @@ const PedidosModelo = {
         if (!id || isNaN(Number(id))) throw new Error('idpedido inválido');
 
         try {
-            const result = await db.query(
+            const result = await ejecutarConsulta(
                 'DELETE FROM pedidos WHERE idpedido=$1 RETURNING *',
                 [id]
             );
 
-            if (!result.rows[0]) throw new Error('Pedido no encontrado');
+            if (!result[0]) throw new Error('Pedido no encontrado');
 
-            return result.rows[0];
+            return result[0];
         } catch (error) {
             console.error('Error al eliminar pedido:', error);
             throw new Error('No se pudo eliminar el pedido');

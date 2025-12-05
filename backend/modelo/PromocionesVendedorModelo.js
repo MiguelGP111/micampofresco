@@ -1,4 +1,5 @@
-import db from './db/Conexion.js'; // ✅ nombre exacto y minúscula
+import { ejecutarConsulta } from '../configuracion/db.js';
+
 
 export const PromocionesModelo = {
 
@@ -13,8 +14,8 @@ export const PromocionesModelo = {
         params.push(idproducto);
       }
 
-      const result = await db.query(query, params);
-      return result.rows;
+      const result = await ejecutarConsulta(query, params);
+      return result;
     } catch (error) {
       console.error('Error al obtener promociones:', error);
       throw new Error('No se pudo obtener las promociones');
@@ -44,8 +45,8 @@ export const PromocionesModelo = {
         query += ' WHERE ' + condiciones.join(' AND ');
       }
 
-      const result = await db.query(query, params);
-      return result.rows;
+      const result = await ejecutarConsulta(query, params);
+      return result;
     } catch (error) {
       console.error('Error al obtener la promoción:', error);
       throw new Error('No se pudo obtener la promoción');
@@ -60,7 +61,7 @@ export const PromocionesModelo = {
   async crearPromocion(data) {
     try {
       const { idproducto, nombre, descripcion, fecha_inicio, fecha_fin, tipo, valor } = data;
-      const result = await db.query(
+      const result = await ejecutarConsulta(
         `INSERT INTO promociones (
            idpromocion, idproducto, nombre, descripcion, fecha_inicio, fecha_fin, tipo, valor
          )
@@ -72,7 +73,7 @@ export const PromocionesModelo = {
         [idproducto, nombre, descripcion, fecha_inicio, fecha_fin, tipo, valor]
       );
 
-      return result.rows[0];
+      return result[0];
     } catch (error) {
       console.error('Error al crear promoción:', error);
       throw new Error('No se pudo crear la promoción');
@@ -84,14 +85,14 @@ export const PromocionesModelo = {
   try {
     const { nombre, descripcion, fecha_inicio, fecha_fin, tipo, valor } = data;
 
-    const result = await db.query(
+    const result = await ejecutarConsulta(
       `UPDATE promociones
        SET nombre=$1, descripcion=$2, fecha_inicio=$3, fecha_fin=$4, tipo=$5, valor=$6
        WHERE idpromocion=$7 RETURNING *`,
       [nombre, descripcion, fecha_inicio, fecha_fin, tipo, valor, id]
     );
 
-    return result.rows[0];
+    return result[0];
   } catch (error) {
     console.error('Error al actualizar promoción:', error);
     throw new Error('No se pudo actualizar la promoción');
@@ -101,11 +102,11 @@ export const PromocionesModelo = {
   // Eliminar promoción
   async eliminarPromocion(id) {
     try {
-      const result = await db.query(
+      const result = await ejecutarConsulta(
         `DELETE FROM promociones WHERE idpromocion=$1 RETURNING *`,
         [id]
       );
-      return result.rows[0];
+      return result[0];
     } catch (error) {
       console.error('Error al eliminar promoción:', error);
       throw new Error('No se pudo eliminar la promoción');

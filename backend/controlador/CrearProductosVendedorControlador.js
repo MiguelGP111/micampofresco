@@ -1,18 +1,19 @@
 // CrearProductosControlador.js
+import { ejecutarConsulta } from '../configuracion/db.js';
 import Producto from '../modelo/CrearProductosVendedorModelo.js'
-import pool from '../modelo/db/Conexion.js';
+
 
 
 export const CrearProductosVendedorControlador = {
     // Obtener todos los productos
     async obtenerProductos(req, res) {
         try {
-            const result = await pool.query('SELECT * FROM productos');
-            console.log('📦 Resultado de la búsqueda:', result.rows);
+            const result = await ejecutarConsulta('SELECT * FROM productos');
+            console.log(' Resultado de la búsqueda:', result);
 
             return res.status(200).json({
                 mensaje: 'Productos obtenidos correctamente',
-                agricultor: result.rows
+                agricultor: result
             });
         } catch (error) {
             console.error(error);
@@ -22,7 +23,7 @@ export const CrearProductosVendedorControlador = {
 
     async obtenerProId(req, res) {
         const { id } = req.params;
-        console.log('🆔 ID recibido:', id);
+        console.log(' ID recibido:', id);
 
         if (isNaN(Number(id))) {
             return res.status(400).json({ mensaje: 'ID inválido' });
@@ -41,7 +42,7 @@ export const CrearProductosVendedorControlador = {
                 producto: producto
             });
         } catch (error) {
-            console.error('❌ Error al obtener producto por ID:', error);
+            console.error(' Error al obtener producto por ID:', error);
             return res.status(500).json({ mensaje: 'Error al obtener el producto' });
         }
     },
@@ -104,7 +105,7 @@ export const CrearProductosVendedorControlador = {
             }
 
             // Inserción en la base de datos
-            const result = await pool.query(
+            const result = await ejecutarConsulta(
                 `INSERT INTO productos (
                 idvendedor, nombre, descripcion, categoria, tipo_producto,
                 unidad_medida, cantidad_por_unidad, precio, descuento, stock,
@@ -123,7 +124,7 @@ export const CrearProductosVendedorControlador = {
 
             res.status(201).json({
                 mensaje: 'Producto creado correctamente',
-                vendedor: (result.rows[0])
+                vendedor: (result[0])
             });
         } catch (error) {
             console.error(error);
@@ -147,7 +148,7 @@ export const CrearProductosVendedorControlador = {
                 disponible
             } = req.body || {};
 
-            const result = await pool.query(
+            const result = await ejecutarConsulta(
                 `UPDATE productos SET 
         nombre=$1,
         descripcion=$2,
@@ -158,12 +159,12 @@ export const CrearProductosVendedorControlador = {
         stock=$7,
         disponible=$8,
         fecha_actualizacion=NOW()
-       WHERE idproducto=$9 RETURNING *`,
+        WHERE idproducto=$9 RETURNING *`,
                 [nombre, descripcion, categoria, tipo_producto, precio, descuento, stock, disponible, id]
             );
 
 
-            res.json(result.rows[0]);
+            res.json(result[0]);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Error al actualizar el producto' });
@@ -175,13 +176,13 @@ export const CrearProductosVendedorControlador = {
         try {
             const { id } = req.params;
             // Obtener el producto antes de eliminarlo
-            const result = await pool.query('SELECT * FROM productos WHERE idproducto = $1', [id]);
-            if (result.rows.length === 0) {
+            const result = await ejecutarConsulta('SELECT * FROM productos WHERE idproducto = $1', [id]);
+            if (result.length === 0) {
                 return res.status(404).json({ message: 'Producto no encontrado' });
             }
-            const productoEliminado = result.rows[0];
+            const productoEliminado = result[0];
             // Eliminar el producto
-            await pool.query('DELETE FROM productos WHERE idproducto = $1', [id]);
+            await ejecutarConsulta('DELETE FROM productos WHERE idproducto = $1', [id]);
             // Retornar el producto eliminado
             res.json({
                 message: 'Producto eliminado correctamente',

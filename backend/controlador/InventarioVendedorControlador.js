@@ -6,13 +6,13 @@ export const InventarioVendedorControlador = {
     // GET /inventario
     async listarInventario(req, res) {
         try {
-            const idvendedor = req.user?.id;
+            const idvendedor = req.usuario?.id;
             if (!idvendedor) return res.status(400).json({ mensaje: 'ID de usuario inválido' });
 
             const inventario = await InventarioVendedorModelo.obtenerInventario(idvendedor) || [];;
 
-            console.log('📦 Resultado de la búsqueda:');
-            console.log('📦  listado de inventarios:', inventario, )
+            console.log(' Resultado de la búsqueda:');
+            console.log('  listado de inventarios:', inventario, )
             return res.status(200).json({
                 mensaje: 'Inventario listado correctamente',
                 inventario: inventario
@@ -36,7 +36,7 @@ export const InventarioVendedorControlador = {
                 return res.status(404).json({ mensaje: 'Inventario no encontrado' });
             }
 
-            console.log('📦 Resultado de la búsqueda:', inventario);
+            console.log(' Resultado de la búsqueda:', inventario);
 
             res.status(200).json({
                 mensaje: 'Inventario encontrado correctamente',
@@ -52,7 +52,7 @@ export const InventarioVendedorControlador = {
     async crearInventario(req, res) {
         try {
             const { idproducto, cantidad_disponible, precio, stock_minimo, stock_maximo, estado, ultimo_ingreso, ultimo_salida } = req.body;
-            const idvendedor = req.user.id; // obtener del token
+            const idvendedor = req.usuario.id; // obtener del token
 
             if (!idproducto || !idvendedor) {
                 return res.status(400).json({ mensaje: 'idproducto e idusuario son obligatorios' });

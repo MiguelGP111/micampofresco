@@ -1,4 +1,4 @@
-import pool from "../modelo/db/Conexion.js";
+import { ejecutarConsulta } from "../configuracion/db.js";
 
 const DetallePedidoModelo = {
 
@@ -14,8 +14,8 @@ const DetallePedidoModelo = {
 
       query += ' ORDER BY idetallep ASC';
 
-      const { rows } = await pool.query(query, values);
-      return rows;
+      const result = await ejecutarConsulta(query, values);
+      return result;
     } catch (error) {
       console.error('❌ Error en listarDetalles:', error.message);
       throw error;
@@ -24,9 +24,9 @@ const DetallePedidoModelo = {
 
   async buscarDetallePorId(idetallep) {
     try {
-      const query = 'SELECT * FROM detalle_pedido WHERE idpedido = $1';
-      const { rows } = await pool.query(query, [idetallep]);
-      return rows[0];
+      const query = 'SELECT * FROM detalle_pedido WHERE idetallep = $1';
+      const result  = await ejecutarConsulta(query, [idetallep]);
+      return result[0];
     } catch (error) {
       console.error('❌ Error en buscarDetallePorId:', error.message);
       throw error;
@@ -42,8 +42,8 @@ const DetallePedidoModelo = {
         RETURNING idetallep, idpedido, idproducto, cantidad, precio_unitario, descuento, impuesto, subtotal, iva, total;
       `;
       const values = [idpedido, idproducto, cantidad, precio_unitario, descuento, impuesto, subtotal, iva, total];
-      const { rows } = await pool.query(query, values);
-      return rows[0];
+      const result = await ejecutarConsulta(query, values);
+      return result[0];
     } catch (error) {
       console.error('❌ Error en crearDetalle:', error.message);
       throw error;
@@ -65,8 +65,8 @@ const DetallePedidoModelo = {
         RETURNING *;
       `;
       const values = [cantidad, precio_unitario, descuento, impuesto, subtotal, iva, total, idetallep];
-      const { rows } = await pool.query(query, values);
-      return rows[0];
+      const result = await ejecutarConsulta(query, values);
+      return result[0];
     } catch (error) {
       console.error('❌ Error en actualizarDetalle:', error.message);
       throw error;
@@ -76,8 +76,8 @@ const DetallePedidoModelo = {
   async eliminarDetalle(idetallep) {
     try {
       const query = 'DELETE FROM detalle_pedido WHERE idetallep = $1 RETURNING *';
-      const { rows } = await pool.query(query, [idetallep]);
-      return rows[0];
+      const result = await ejecutarConsulta(query, [idetallep]);
+      return result[0];
     } catch (error) {
       console.error('❌ Error en eliminarDetalle:', error.message);
       throw error;

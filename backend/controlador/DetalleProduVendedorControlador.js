@@ -5,7 +5,7 @@ export const DetalleProduVendedorControlador = {
   // GET /detalles
   async listar(req, res) {
     try {
-      const idvendedor = req.user?.id;
+      const idvendedor = req.usuario?.id;
 
       if (!idvendedor)
         return res.status(400).json({ mensaje: "ID del vendedor inválido" });
@@ -49,10 +49,11 @@ export const DetalleProduVendedorControlador = {
     }
   },
 
+
   // POST /detalles
   async crear(req, res) {
     try {
-      const idvendedor = req.user?.id;
+      const idvendedor = req.usuario?.id;
       const data = { ...req.body, idvendedor };
 
       if (!data.idproducto)

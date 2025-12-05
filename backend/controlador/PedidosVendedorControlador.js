@@ -56,6 +56,10 @@ const PedidosVendedorControlador = {
         try {
             const pedido = await PedidosVendedorModelo.crearPedido(req.body);
 
+            console.log("BODY RECIBIDO:", req.body);
+            console.log("IDUSUARIO RECIBIDO:", req.body.idusuario);
+        
+
             if (!pedido) {
                 return res.status(400).json({
                     mensaje: 'No se pudo crear el pedido. Verifique los datos e intente nuevamente.'
@@ -68,8 +72,10 @@ const PedidosVendedorControlador = {
             });
 
         } catch (error) {
-            res.status(400).json({
-                mensaje: 'Hubo un problema al crear el pedido. Revise los datos enviados.',
+            console.error("Error real al crear el pedido:", error)
+
+            return res.status(500).json({
+                mensaje: 'Error interno al crear el pedido.',
                 error: error.message
             });
         }

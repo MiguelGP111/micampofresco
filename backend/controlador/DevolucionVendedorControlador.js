@@ -6,7 +6,7 @@ export const DevolucionVendedorControlador = {
   // GET /devoluciones/:idusuario
   async listarDevoluciones(req, res) {
     try {
-      const { idusuario }  = req.query;
+      const { idusuario }  = req.params;
       const devoluciones = await DevolucionVendedorModelo.obtenerDevoluciones(idusuario);
       console.log("Listado de Devolucion:", devoluciones);
       res.status(200).json({ mensaje: 'Devoluciones listadas correctamente', devoluciones: devoluciones });

@@ -89,7 +89,7 @@ export const VariantesVendedorControlador = {
       }
 
       console.log('Variante eliminada correctamente:', varianteEliminada);
-       res.json({ mensaje: 'variante Creada correctamente', varianteEliminada: varianteEliminada });
+       res.json({ mensaje: 'variante eliminada correctamente', varianteEliminada: varianteEliminada });
     } catch (error) {
       console.error('Error en eliminarVariante:', error);
       res.status(500).json({ error: error.message });

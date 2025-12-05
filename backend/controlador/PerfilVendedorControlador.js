@@ -4,11 +4,11 @@ const VendorPerfilControlador = {
 
   async verPerfil(req, res) {
     try {
-      const { id } = req.user || {};
+      const { id } = req.usuario || {};
 
       // Validación si no hay idvendedor
       if (!id) {
-        console.log("❌ No se recibió el id del vendedor");
+        console.log(" No se recibió el id del vendedor");
         return res.status(400).json({
           mensaje: "No se recibió el ID del vendedor. Debe iniciar sesión."
         });
@@ -32,11 +32,11 @@ const VendorPerfilControlador = {
 
   async actualizarPerfil(req, res) {
     try {
-      const { id } = req.user || {};
+      const { id } = req.usuario || {};
 
       // Validación si no hay idvendedor
       if (!id) {
-        console.log("❌ No se recibió el id del vendedor para  actualizar");
+        console.log(" No se recibió el id del vendedor para  actualizar");
         return res.status(400).json({
           mensaje: "No se recibió el ID del vendedor. Debe iniciar sesión."
         });
@@ -51,7 +51,7 @@ const VendorPerfilControlador = {
       });
 
     } catch (error) {
-      console.error("❌ Error al actualizar perfil:", error);
+      console.error(" Error al actualizar perfil:", error);
       res.status(500).json({
         mensaje: "Error al actualizar el perfil",
         error: error.message

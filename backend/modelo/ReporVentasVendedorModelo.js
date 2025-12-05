@@ -1,18 +1,19 @@
 // models/ReporteModel.js
-import pool from '../modelo/db/Conexion.js';
+import { ejecutarConsulta } from '../configuracion/db.js';
+
 
 export async function obtenerVentas() {
-  const result = await pool.query(`
+  const result = await ejecutarConsulta(`
     SELECT v.idventa, p.nombre, v.cantidad, v.fecha
     FROM ventas v
     JOIN productos p ON v.idproducto = p.idproducto
     ORDER BY v.fecha DESC
   `);
-  return result.rows;
+  return result;
 }
 
 export async function productosMasVendidos(limit = 5) {
-  const result = await pool.query(`
+  const result = await ejecutarConsulta(`
     SELECT p.nombre, SUM(v.cantidad) AS total_vendido
     FROM ventas v
     JOIN productos p ON v.idproducto = p.idproducto
@@ -20,5 +21,5 @@ export async function productosMasVendidos(limit = 5) {
     ORDER BY total_vendido DESC
     LIMIT $1
   `, [limit]);
-  return result.rows;
+  return result;
 }

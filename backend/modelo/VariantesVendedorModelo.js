@@ -1,13 +1,13 @@
 // backend/modelo/VariantesModelo.js
-import db from '../modelo/db/Conexion.js'; // Asegúrate que la ruta sea correcta
+import { ejecutarConsulta } from '../configuracion/db.js';
 
 export const VariantesModelo = {
 
   // Obtener todas las variantes de un producto
   async obtenerVariantes() {
     try {
-      const result = await db.query('SELECT * FROM variantes');
-      return result.rows;
+      const result = await ejecutarConsulta('SELECT * FROM variantes');
+      return result;
     } catch (error) {
       console.error('Error al obtener variantes:', error);
       throw new Error('No se pudieron obtener las variantes');
@@ -17,11 +17,11 @@ export const VariantesModelo = {
   // Obtener variante por ID
   async obtenerVarianteId(id) {
     try {
-      const result = await db.query(
+      const result = await ejecutarConsulta(
         `SELECT * FROM variantes WHERE idvariante = $1`,
         [id]
       );
-      return result.rows[0];
+      return result[0];
     } catch (error) {
       console.error('Error al obtener variante:', error);
       throw new Error('No se pudo obtener la variante');
@@ -33,7 +33,7 @@ export const VariantesModelo = {
     try {
       const { idproducto, nombre, precio, stock, stock_minimo, stock_maximo, unidad_medida, peso, fecha_caducidad, ingredientes, estado, impuestos } = data;
 
-      const result = await db.query(
+      const result = await ejecutarConsulta(
         `INSERT INTO variantes (
            idproducto, nombre, precio, stock, stock_minimo, stock_maximo, unidad_medida, peso, fecha_caducidad, ingredientes, estado, impuestos, created_at, updated_at
          )
@@ -44,7 +44,7 @@ export const VariantesModelo = {
         [idproducto, nombre, precio, stock, stock_minimo, stock_maximo, unidad_medida, peso, fecha_caducidad, ingredientes, estado || 'activo', impuestos]
       );
 
-      return result.rows[0];
+      return result[0];
     } catch (error) {
       console.error('Error al crear variante:', error);
       throw new Error('No se pudo crear la variante');
@@ -56,7 +56,7 @@ export const VariantesModelo = {
     try {
       const { nombre, precio, stock, stock_minimo, stock_maximo, unidad_medida, peso, fecha_caducidad, ingredientes, estado, impuestos } = data;
 
-      const result = await db.query(
+      const result = await ejecutarConsulta(
         `UPDATE variantes
          SET nombre=$1, precio=$2, stock=$3, stock_minimo=$4, stock_maximo=$5, unidad_medida=$6, peso=$7, fecha_caducidad=$8, ingredientes=$9, estado=$10, impuestos=$11, updated_at=NOW()
          WHERE idvariante=$12
@@ -64,7 +64,7 @@ export const VariantesModelo = {
         [nombre, precio, stock, stock_minimo, stock_maximo, unidad_medida, peso, fecha_caducidad, ingredientes, estado, impuestos, idvariante]
       );
 
-      return result.rows[0];
+      return result[0];
     } catch (error) {
       console.error('Error al actualizar variante:', error);
       throw new Error('No se pudo actualizar la variante');
@@ -74,11 +74,11 @@ export const VariantesModelo = {
   // Eliminar variante
   async eliminarVariante(id) {
     try {
-      const result = await db.query(
+      const result = await ejecutarConsulta(
         `DELETE FROM variantes WHERE idvariante=$1 RETURNING *`,
         [id]
       );
-      return result.rows[0];
+      return result[0];
     } catch (error) {
       console.error('Error al eliminar variante:', error);
       throw new Error('No se pudo eliminar la variante');
