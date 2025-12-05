@@ -1,0 +1,35 @@
+# Ignorar dependencias, builds y archivos sensibles
+
+# Node
+node_modules/
+
+# Entornos
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Builds
+dist/
+build/
+.cache/
+coverage/
+.tmp/
+
+# IDEs y sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Archivos temporales
+*.swp
+*.swo
+
